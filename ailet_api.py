@@ -1,5 +1,5 @@
 import requests
-import capture_image
+import utils
 BASE_URL = 'https://poc.intrtl.com/api/v2/'
 
 def auth_login(user, pwd):
@@ -38,13 +38,11 @@ def auth_login(user, pwd):
 
 
 # Function to post a photo
-def post_photo(token):
+def post_photo(token, photo_id):
     url = BASE_URL + "v2/photos/"
     visit_id = "faraz-test"
     scene_id = "1"
     external_store_id = "10001"
-    format = capture_image.get_timestamp()
-    photo_id = "photo_" + format + ".png"
     photo_file_path = f"./images/{photo_id}.png"
     files = {
         'photo_data': open(photo_file_path, 'rb')
