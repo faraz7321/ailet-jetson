@@ -60,5 +60,5 @@ def post_photo(token, photo_id):
     }
 
     response = requests.post(url, files=files, data=data, headers=headers)
-    #print("post_photo:", response.text)
+    print("post_photo:", response.text)
     return response.json()
