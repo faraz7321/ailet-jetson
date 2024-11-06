@@ -1,9 +1,11 @@
 import requests
 import utils
-BASE_URL = 'https://poc.intrtl.com/api/v2/'
+import time
+
+AILET_BASE_URL = 'https://poc.intrtl.com/api/v2/'
 
 def auth_login(user, pwd):
-    url = BASE_URL + 'auth/login'
+    url = AILET_BASE_URL + 'auth/login'
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json'
@@ -39,7 +41,7 @@ def auth_login(user, pwd):
 
 # Function to post a photo
 def post_photo(token, photo_id):
-    url = BASE_URL + "v2/photos/"
+    url = AILET_BASE_URL + "photos/"
     visit_id = "faraz-test"
     scene_id = "1"
     external_store_id = "10001"
@@ -58,4 +60,5 @@ def post_photo(token, photo_id):
     }
 
     response = requests.post(url, files=files, data=data, headers=headers)
+    #print("post_photo:", response.text)
     return response.json()
