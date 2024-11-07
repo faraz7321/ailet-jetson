@@ -2,6 +2,8 @@ from datetime import datetime
 import cv2
 import os
 import glob
+import numpy as np
+import sys
 
 def get_timestamp():
     # Get the current time
@@ -34,9 +36,11 @@ def capture_image(filename):
         return None
 
     # Save the frame
+    full_image_path = f"images/{filename}.png"
     os.makedirs('images', exist_ok=True)
-    cv2.imwrite(f"images/{filename}.png", frame)
-    print(f"Image saved as {filename}")
+    cv2.imwrite(full_image_path, frame)
+    blur_face(image_path=full_image_path)
+    print(f"Image saved as {filename}.png")
 
     # Release the webcam
     cap.release()
@@ -64,3 +68,44 @@ def remove_file(file_path):
         print(f"Permission denied: Unable to delete '{file_path}'.")
     except Exception as e:
         print(f"An error occurred while trying to delete the file: {e}")
+        
+def blur_face(image_path):
+    
+    prototxt_path = "face-to-blur/weights/deploy.prototxt.txt"
+    model_path = "face-to-blur/weights/res10_300x300_ssd_iter_140000_fp16.caffemodel"
+    model = cv2.dnn.readNetFromCaffe(prototxt_path, model_path)
+    #image_path = sys.argv[1]
+
+    output_directory = "images/"
+    os.makedirs(output_directory, exist_ok=True)
+    image = cv2.imread(image_path)
+    filename = os.path.basename(image_path)
+    name, extension = os.path.splitext(filename)
+    output_image_path = os.path.join(output_directory, f"{name}{extension}")
+    
+    height, width = image.shape[:2]
+    kernel_width = (width // 7) | 1
+    kernel_height = (height // 7) | 1
+    blob = cv2.dnn.blobFromImage(image, 1.0, (300, 300), (104.0, 177.0, 123.0))
+    model.setInput(blob)
+    output = np.squeeze(model.forward())
+
+    for i in range(0, output.shape[0]):
+        face_accuracy = output[i, 2]
+        
+        if face_accuracy > 0.4:
+            box = output[i, 3:7] * np.array([width, height, width, height])
+            start_x, start_y, end_x, end_y = box.astype(np.int64)
+            face = image[start_y:end_y, start_x:end_x]
+            face = cv2.GaussianBlur(face, (kernel_width, kernel_height), 0)
+            image[start_y:end_y, start_x:end_x] = face
+
+    width = 1080
+    height = 540
+
+    # cv2.namedWindow("The results", cv2.WINDOW_NORMAL)
+    # cv2.resizeWindow("The results", width, height)
+
+    # cv2.imshow("The results", image)
+    # cv2.waitKey(0)
+    cv2.imwrite(output_image_path, image)
