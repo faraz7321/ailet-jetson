@@ -23,7 +23,7 @@ try:
             if not command_running:
                 print("Pins connected - starting command.")
                 # Start the command as a subprocess
-                process = subprocess.Popen(["echo", "Hello from NVIDIA Jetson!"], stdout=subprocess.PIPE)
+                process = subprocess.Popen(["python3", "/home/foronz/ailet-jetson/start_ailet.py"], stdout=subprocess.PIPE)
                 command_running = True
         else:
             if command_running:

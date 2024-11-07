@@ -2,7 +2,6 @@ import time
 from ailet_api import *
 from utils import *
 
-
 token = auth_login("efrobotics.poc", "efrobotics1")
 camera_name="usb-NOVATEK_Berxel_iHawk100_HK100QB3508P1151"
 
