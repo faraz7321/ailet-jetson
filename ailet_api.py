@@ -41,6 +41,7 @@ def auth_login(user, pwd):
 
 # Function to post a photo
 def post_photo(token, photo_id):
+    time.sleep(1)
     url = AILET_BASE_URL + "photos/"
     visit_id = "faraz-test"
     scene_id = "1"
@@ -50,7 +51,7 @@ def post_photo(token, photo_id):
         'photo_data': open(photo_file_path, 'rb')
     }
     data = {
-        'visit_id': visit_id,
+        'visit_id': utils.get_visitID(),
         'photo_id': photo_id,
         'scene_id': scene_id,
         'external_store_id': external_store_id
@@ -60,5 +61,6 @@ def post_photo(token, photo_id):
     }
 
     response = requests.post(url, files=files, data=data, headers=headers)
-    print("post_photo:", response.text)
+    #print("post_photo:", response.text)
+    print(f"Uploaded image: {photo_id}")
     return response.json()

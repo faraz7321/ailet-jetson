@@ -3,7 +3,7 @@ import cv2
 import os
 import glob
 import numpy as np
-import sys
+import time
 
 def get_timestamp():
     # Get the current time
@@ -13,8 +13,16 @@ def get_timestamp():
     timestamp = now.strftime("%d%m%y_%H%M%S")
     
     return timestamp
-
+def get_visitID():
+    # Get the current time
+    now = datetime.now()
+    
+    # Format the timestamp as photo_ddmmyy_hhmmss
+    timestamp = now.strftime("faraz%d%m%y")
+    
+    return timestamp
 def capture_image(filename):
+    time.sleep(1)
     camera_path = get_camera_path()  # Get the dynamically assigned camera path
     if camera_path is None:
         return  # Exit if the camera is not found
